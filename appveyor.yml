@@ -3,8 +3,8 @@
 
 environment:
   global:
-    REPO_DIR: PGL
-    PACKAGE_NAME: pgl
+    REPO_DIR: pahelix_pkg 
+    PACKAGE_NAME: pahelix
     BUILD_COMMIT: main
     NP_BUILD_DEP: "Cython numpy opencv-python==4.2.0.32"
     NP_TEST_DEP: "numpy Cython paddlepaddle networkx"
