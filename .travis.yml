@@ -1,0 +1,78 @@
+env:
+  global:
+  - REPO_DIR=pahelix_pkg
+  - BUILD_COMMIT=main
+  - BUILD_DEPENDS="Cython numpy"
+  - TEST_DEPENDS="numpy Cython opencv-python==4.2.0.32 paddlepaddle==1.7.2 networkx rarfile==3.0"
+  - PLAT=x86_64
+  - UNICODE_WIDTH=32
+  - WHEELHOUSE_UPLOADER_USERNAME=travis-worker
+  - TWINE_USERNAME=yelrose
+  - secure: VyvntgpNNw3LvPVP2UkvBiR9H3++QevxC+hXZ2AXOVDwwvoYdMdxt9SHMQhKdJiKlz0D0InFzXzn4N/02s/QPh7ZzD2a5ybufNzkH5zlDnn4xjmS4A/h1Vr0Vfx2GktK6pzc953IlEEpc1D1aGtg7VTV3s1Qp0P5g4ee82VsGW3ntkSqdm4DOU4MQco5LKxkR1OAmq2mMR/TJaGUtqBiGmYPIzttqX1fB3Mc0owZsv3Xzxi4fcQQ9EjMDA0eFO9QN50zhLb4dxDT6gSLNr+YtTHnwYruzPd/dRwz7yHYadaJjqY69KaxrlmPhFn5RT2RNQw3dB6u6Yf9V8uIrV7xU/mWBQBNheov5XnXBq+Pwnt0UAoU/zMSbahTcIPEKFRWVCx1Ct1FZaPBWJQvlZSOA7RCTLbUZWBTLkyYDknTvHp2jZtsLkiJ1F14r0OKJVM1XKm2ahq9p4Ty2oLBHom4KK6M353X/WLR575r1jzKVI3tPNYhiqgxaPCTM1uU26MYmsYnkiCEV+M0JQBDT8daU3Oi9n1000+Rt/lj81oRRQAaIT9i1LHVPOZU4pF7++PNBaYfkCoXRDGZpRVoY8ay9hoWKO1qDLSfXM1fOm+Xm1/UCzCZp1pE+Vc/vUChRnOM1dPJsxhBviWA5TKxJHfNaaNDF519p2eAZOZNahxHpgo=
+language: generic
+services: docker
+dist: xenial
+matrix:
+  exclude:
+  - python: 3.5
+  include:
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=2.7
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.5
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.5
+    - PLAT=i686
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.6
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.6
+    - PLAT=i686
+  - os: linux
+    env:
+    - MB_PYTHON_VERSION=3.7
+  - os: osx
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=2.7
+  - os: osx
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=3.5
+  - os: osx
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=3.6
+  - os: osx
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=3.7
+    - MB_PYTHON_OSX_VER=10.9
+  - os: osx
+    language: generic
+    env:
+    - MB_PYTHON_VERSION=pypy-5.7
+before_install:
+- source multibuild/common_utils.sh
+- source multibuild/travis_steps.sh
+- before_install
+install:
+#- echo $REPO_DIR $BUILD_COMMIT
+#- clean_code $REPO_DIR $BUILD_COMMIT
+- build_wheel $REPO_DIR $PLAT
+script:
+- install_run $PLAT
+after_success:
+- pip install twine
+- twine upload ${TRAVIS_BUILD_DIR}/wheelhouse/* --skip-existing -p $TWINE_PASSWD -u
+  $TWINE_USERNAME --repository-url https://test.pypi.org/legacy/
+
+#- twine upload ${TRAVIS_BUILD_DIR}/wheelhouse/* --skip-existing -p $TWINE_PASSWD -u
+#  $TWINE_USERNAME 
+
+
